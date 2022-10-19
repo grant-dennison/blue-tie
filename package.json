@@ -1,0 +1,57 @@
+{
+  "name": "todo-name-worker-lib",
+  "version": "1.0.0",
+  "description": "TODO: description",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "esbuild src/index.ts --bundle --platform=node --outfile=lib/index.js",
+    "check-types": "tsc --noEmit",
+    "clean": "node -p \"require('fs').rmSync('lib',{force:true,recursive:true})\"",
+    "format": "prettier --write .",
+    "generate-declarations": "tsc --emitDeclarationOnly",
+    "lint": "eslint src",
+    "lint:fix": "eslint --fix src",
+    "preprepublish": "npm run clean",
+    "prepublish": "run-p --aggregate-output build check-types test generate-declarations",
+    "test": "uts -r esbuild-register -r ./src/test/add-register-for-test.ts src",
+    "test:watch": "watchlist --eager src -- npm test"
+  },
+  "author": "Grant Dennison <grant.dennison@gmail.com>",
+  "license": "MIT",
+  "files": [
+    "lib/*.js",
+    "lib/*.d.ts"
+  ],
+  "devDependencies": {
+    "@tsconfig/node16": "^1",
+    "@types/node": "^16",
+    "@typescript-eslint/eslint-plugin": "~5.33.1",
+    "@typescript-eslint/parser": "~5.33.1",
+    "esbuild": "^0.15.5",
+    "esbuild-register": "^3.3.3",
+    "eslint": "^8.22.0",
+    "esm": "^3.2.25",
+    "npm-run-all": "^4.1.5",
+    "prettier": "~2.7.1",
+    "typescript": "~4.7",
+    "under-the-sun": "^1.0.1",
+    "watchlist": "^0.3.1"
+  },
+  "eslintConfig": {
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "project": [
+        "./tsconfig.json"
+      ]
+    },
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:@typescript-eslint/recommended-requiring-type-checking"
+    ]
+  }
+}

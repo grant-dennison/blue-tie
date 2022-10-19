@@ -1,0 +1,14 @@
+{
+  "extends": "@tsconfig/node16/tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "rootDir": "src",
+    "outDir": "lib",
+    "importsNotUsedAsValues": "error",
+    "baseUrl": "./src",
+    "paths": {
+      "under-the-sun": ["."]
+    }
+  },
+  "include": ["src/**/*.ts", "magic-global.d.ts"]
+}
