@@ -13,7 +13,7 @@
   "scripts": {
     "browser-tests": "esbuild src/test/all-tests.ts --bundle --platform=browser --sourcemap --alias:std-lib=std-lib.browser --alias:test-lib=test-lib.browser --outfile=www/index.js --servedir=www --serve=8030",
     "build": "run-p --aggregate-output build:browser build:node",
-    "build:browser": "esbuild src/api/index.ts --bundle --platform=browser --alias:std-lib=std-lib.browser --minify --outfile=lib/index.browser.js",
+    "build:browser": "esbuild src/api/index.ts --bundle --platform=browser --format=esm --alias:std-lib=std-lib.browser --minify --outfile=lib/index.browser.js",
     "build:node": "esbuild src/api/index.ts --bundle --platform=node --minify --outfile=lib/index.js",
     "check-types": "tsc --noEmit",
     "clean": "node -p \"require('fs').rmSync('lib',{force:true,recursive:true})\"",

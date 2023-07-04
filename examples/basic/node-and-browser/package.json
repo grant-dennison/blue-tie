@@ -1,0 +1,13 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "esbuild index.ts --bundle --platform=browser --sourcemap --outfile=index.js --servedir=. --serve=8080",
+    "test": "uts -r esbuild-register -r ./add-register-for-test.ts"
+  },
+  "devDependencies": {
+    "esbuild": "^0.18.11",
+    "esbuild-register": "^3.4.2",
+    "under-the-sun": "^2",
+    "worker-lib": "file:../../.."
+  }
+}

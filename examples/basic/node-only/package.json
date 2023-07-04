@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "scripts": {
+    "test": "uts"
+  },
+  "devDependencies": {
+    "under-the-sun": "^2",
+    "worker-lib": "file:../../.."
+  }
+}

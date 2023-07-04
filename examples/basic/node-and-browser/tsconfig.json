@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "rootDir": ".",
+    "esModuleInterop": true,
+    "strict": true
+  },
+  "include": ["**/*.ts"]
+}
