@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "browser-tests": "esbuild src/test/browser-stuff.ts --bundle --platform=browser --sourcemap --alias:std=std.browser --alias:test-basics=test-basics.browser --outfile=www/index.js --servedir=www --serve=8030",
+    "browser-tests": "esbuild src/test/all-tests.ts --bundle --platform=browser --sourcemap --alias:std-lib=std-lib.browser --alias:test-lib=test-lib.browser --outfile=www/index.js --servedir=www --serve=8030",
     "build": "esbuild src/index.ts --bundle --platform=node --outfile=lib/index.js",
     "check-types": "tsc --noEmit",
     "clean": "node -p \"require('fs').rmSync('lib',{force:true,recursive:true})\"",

@@ -1,5 +1,7 @@
-import { deepStrictEqual, strictEqual, test } from "test-basics"
+import testLib from "test-lib"
 import twoWayCommWorker from "./two-way-communication-worker"
+
+const { deepStrictEqual, strictEqual, test } = testLib
 
 test("worker lib should allow calling a function returned from worker", async () => {
   const workerApi = twoWayCommWorker.create()

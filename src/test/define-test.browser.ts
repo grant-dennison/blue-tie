@@ -1,4 +1,5 @@
-import { isMainThread } from "std.browser"
+import stdLib from "std-lib.browser"
+const { isMainThread } = stdLib
 
 export function test(
   description: string,

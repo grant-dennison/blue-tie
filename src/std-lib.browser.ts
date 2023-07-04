@@ -1,14 +1,16 @@
-export {
+import {
   getWorkerInterfaceForThis,
   makeWorker,
   workerData,
 } from "./worker-abstraction.browser"
 export const randomUUID = () => crypto.randomUUID()
 
-// From https://stackoverflow.com/a/23619712/4639640
-export const isMainThread = typeof importScripts !== "function"
+import type { StdLib } from "./std-lib"
 
-export function assert(
+// From https://stackoverflow.com/a/23619712/4639640
+const isMainThread = typeof importScripts !== "function"
+
+function assert(
   value: unknown,
   message?: string | Error
 ): asserts value {
@@ -22,3 +24,14 @@ export function assert(
     throw message
   }
 }
+
+const stdLib: StdLib = {
+  assert,
+  isMainThread,
+  getWorkerInterfaceForThis,
+  makeWorker,
+  workerData,
+  randomUUID: () => crypto.randomUUID(),
+}
+
+export default stdLib

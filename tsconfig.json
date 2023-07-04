@@ -5,10 +5,10 @@
     "outDir": "lib",
     "baseUrl": "./src",
     "paths": {
-      "std": ["./std.node.ts"],
-      "std.browser": ["./std.browser.ts"],
-      "test-basics": ["./test/test-basics.node.ts"],
-      "test-basics.browser": ["./test/test-basics.browser.ts"]
+      "std-lib": ["./std-lib.node.ts"],
+      "std-lib.browser": ["./std-lib.browser.ts"],
+      "test-lib": ["./test/test-lib.node.ts"],
+      "test-lib.browser": ["./test/test-lib.browser.ts"]
     },
     "lib": ["es2021", "DOM", "WebWorker"],
     "module": "commonjs",

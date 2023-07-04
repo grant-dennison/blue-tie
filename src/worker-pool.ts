@@ -4,15 +4,17 @@ import type {
   ReceiveMessage,
   SendMessage,
 } from "message-types"
-import {
+import stdLib from "std-lib"
+import type { WorkerAbstraction } from "./worker-abstraction"
+
+const {
   assert,
   getWorkerInterfaceForThis,
   isMainThread,
   makeWorker,
   randomUUID,
   workerData,
-} from "std"
-import type { WorkerAbstraction } from "./worker-abstraction"
+} = stdLib
 
 export function defineWorker<T extends Record<string, SomeFunction>>(
   workerId: string,

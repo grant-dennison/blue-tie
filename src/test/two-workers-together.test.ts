@@ -1,5 +1,7 @@
-import { strictEqual, test } from "test-basics"
+import testLib from "test-lib"
 import { worker1, worker2 } from "./two-workers-together"
+
+const { strictEqual, test } = testLib
 
 test("two workers in same file", async () => {
   const worker1Api = worker1.create()

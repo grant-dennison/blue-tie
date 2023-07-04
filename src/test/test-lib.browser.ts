@@ -1,6 +1,7 @@
-export { test } from "./define-test.browser"
+import { test } from "./define-test.browser"
+import type { TestLib } from "./test-lib"
 
-export function strictEqual<T>(
+function strictEqual<T>(
   actual: unknown,
   expected: T,
   message?: string | Error
@@ -18,10 +19,18 @@ export function strictEqual<T>(
   }
 }
 
-export function deepStrictEqual<T>(
+function deepStrictEqual<T>(
   actual: unknown,
   expected: T,
   message?: string | Error
 ): asserts actual is T {
   strictEqual(JSON.stringify(actual), JSON.stringify(expected), message)
 }
+
+const testLib: TestLib = {
+  deepStrictEqual,
+  strictEqual,
+  test,
+}
+
+export default testLib
