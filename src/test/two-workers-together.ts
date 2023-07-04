@@ -1,5 +1,4 @@
-import { isNode } from "environment"
-import { defineWorker } from "worker-pool"
+import { defineWorker, isNode } from "worker-lib"
 import { getBrowserScript } from "./script.browser"
 
 export const worker1 = defineWorker(

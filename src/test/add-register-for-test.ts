@@ -1,3 +1,3 @@
-import { addExecArgv } from "../worker-exec-argv"
+import { addExecArgv } from "worker-lib"
 
 addExecArgv("-r", "esbuild-register")

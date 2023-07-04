@@ -1,7 +1,7 @@
 import assert from "node:assert"
 import { MessagePort, parentPort, Worker } from "node:worker_threads"
 import type { WorkerAbstraction } from "./worker-abstraction"
-import { workerExecArgv } from "./worker-exec-argv"
+import { workerExecArgv } from "./worker-exec-argv-private"
 
 export function makeWorker<ReceiveMessage, SendMessage>(
   file: string,

@@ -5,33 +5,17 @@ import type {
   SendMessage,
 } from "message-types"
 import stdLib from "std-lib"
+import type { SomeFunction, WorkerInterface } from "./api/api-types"
 import { assert } from "./assert"
 import type { WorkerAbstraction } from "./worker-abstraction"
 
 const {
-  getWorkerInterfaceForThis,
   isMainThread,
   makeWorker,
   randomUUID,
-  workerId: globalWorkerId,
 } = stdLib
 
-export function defineWorker<T extends Record<string, SomeFunction>>(
-  workerId: string,
-  fileName: string,
-  spec: T
-): { create: () => WorkerInterface<T> } {
-  if (!isMainThread && workerId === globalWorkerId) {
-    const pp = getWorkerInterfaceForThis<ReceiveMessage, SendMessage>()
-    assert(pp)
-    setUpRpc(pp, spec)
-  }
-  return {
-    create: () => makeRpcWorker(workerId, fileName, spec),
-  }
-}
-
-function makeRpcWorker<T extends Record<string, SomeFunction>>(
+export function makeRpcWorker<T extends Record<string, SomeFunction>>(
   workerId: string,
   fileName: string,
   spec: T
@@ -53,22 +37,7 @@ function makeRpcWorker<T extends Record<string, SomeFunction>>(
     }, {} as WorkerInterface<T>)
 }
 
-const neverSymbol = Symbol("never")
-type DebugNever<Message extends string, T = unknown> = [
-  never,
-  T,
-  Message,
-  typeof neverSymbol
-]
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type SomeFunction = (...args: readonly any[]) => unknown
-type WorkerInterface<T> = {
-  [K in keyof T]: T[K] extends SomeFunction
-    ? T[K]
-    : DebugNever<"Field is not a function", [K, T[K]]>
-}
-
-function setUpRpc(
+export function setUpRpc(
   port: WorkerAbstraction<ReceiveMessage, SendMessage>,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   initialPhoneBook: Record<string, (...args: readonly any[]) => unknown>

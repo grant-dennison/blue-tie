@@ -3,10 +3,18 @@
   "version": "1.0.0",
   "description": "TODO: description",
   "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "types": "lib/api/index.d.ts",
+  "exports": {
+    ".": {
+      "browser": "./lib/index.browser.js",
+      "node": "./lib/index.js"
+    }
+  },
   "scripts": {
     "browser-tests": "esbuild src/test/all-tests.ts --bundle --platform=browser --sourcemap --alias:std-lib=std-lib.browser --alias:test-lib=test-lib.browser --outfile=www/index.js --servedir=www --serve=8030",
-    "build": "esbuild src/index.ts --bundle --platform=node --outfile=lib/index.js",
+    "build": "run-p --aggregate-output build:browser build:node",
+    "build:browser": "esbuild src/api/index.ts --bundle --platform=browser --alias:std-lib=std-lib.browser --minify --outfile=lib/index.browser.js",
+    "build:node": "esbuild src/api/index.ts --bundle --platform=node --minify --outfile=lib/index.js",
     "check-types": "tsc --noEmit",
     "clean": "node -p \"require('fs').rmSync('lib',{force:true,recursive:true})\"",
     "format": "prettier --no-semi --write .",
@@ -21,8 +29,8 @@
   "author": "Grant Dennison <grant.dennison@gmail.com>",
   "license": "MIT",
   "files": [
-    "lib/*.js",
-    "lib/*.d.ts"
+    "lib/index*.js",
+    "lib/api/*.d.ts"
   ],
   "devDependencies": {
     "@tsconfig/node16": "^1",

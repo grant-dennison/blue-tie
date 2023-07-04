@@ -23,16 +23,6 @@ export function test(
       outputElement.appendChild(createFailElement(description, e))
     }
   )
-
-  // try {
-  //   implementation()
-  //   console.log(`PASS: ${description}`)
-  //   outputElement.appendChild(createPassElement(description))
-  // } catch (e) {
-  //   console.error(`FAIL: ${description}`)
-  //   console.error(e)
-  //   outputElement.appendChild(createFailElement(description, e))
-  // }
 }
 
 function createPassElement(description: string) {

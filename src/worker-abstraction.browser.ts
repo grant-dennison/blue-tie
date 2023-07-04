@@ -39,10 +39,6 @@ function wrapBrowserInterface<ReceiveMessage, SendMessage>(
         const data = event.data as ReceiveMessage
         callback(data)
       }
-      // addEventListener("message", (event) => {
-      //   const data = event.data as ReceiveMessage
-      //   callback(data)
-      // })
     },
     postMessage(data) {
       port.postMessage(data)
