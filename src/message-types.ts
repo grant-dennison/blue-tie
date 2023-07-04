@@ -17,14 +17,15 @@ export type CallRejectMessage = {
   value: unknown
 }
 
-export type CallResponseMessage =
-  CallResolveMessage |
-  CallRejectMessage
+export type CallResponseMessage = CallResolveMessage | CallRejectMessage
 
 export type ReferenceFreeMessage = {
   type: "ref-free"
   referenceIds: readonly string[]
 }
 
-export type ReceiveMessage = CallResponseMessage | CallMessage | ReferenceFreeMessage
+export type ReceiveMessage =
+  | CallResponseMessage
+  | CallMessage
+  | ReferenceFreeMessage
 export type SendMessage = CallResolveMessage | CallRejectMessage | CallMessage

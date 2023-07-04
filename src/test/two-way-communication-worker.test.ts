@@ -31,9 +31,12 @@ test("worker lib should allow back-and-forth functions", async () => {
     const strings: string[] = []
     const getL = await workerApi.getFunction("l")
     for (let j = 0; j < 3; j++) {
-      await workerApi.runFunction(async (k) => {
-        strings.push(`i${i} j${j} k${k} ${await getL("l")}`)
-      }, [-1 * j])
+      await workerApi.runFunction(
+        async (k) => {
+          strings.push(`i${i} j${j} k${k} ${await getL("l")}`)
+        },
+        [-1 * j]
+      )
     }
     callNum++
     return strings

@@ -1,20 +1,27 @@
 import { isMainThread } from "std.browser"
 
-export function test(description: string, implementation: () => void | PromiseLike<void>) {
+export function test(
+  description: string,
+  implementation: () => void | PromiseLike<void>
+) {
   if (!isMainThread) {
     return
   }
 
-  const outputElement = document.getElementById("test-output") ?? document.createElement("div")
+  const outputElement =
+    document.getElementById("test-output") ?? document.createElement("div")
 
-  Promise.resolve(implementation()).then(() => {
-    console.log(`PASS: ${description}`)
-    outputElement.appendChild(createPassElement(description))
-  }, (e) => {
-    console.error(`FAIL: ${description}`)
-    console.error(e)
-    outputElement.appendChild(createFailElement(description, e))
-  })
+  Promise.resolve(implementation()).then(
+    () => {
+      console.log(`PASS: ${description}`)
+      outputElement.appendChild(createPassElement(description))
+    },
+    (e) => {
+      console.error(`FAIL: ${description}`)
+      console.error(e)
+      outputElement.appendChild(createFailElement(description, e))
+    }
+  )
 
   // try {
   //   implementation()

@@ -1,8 +1,13 @@
 import type { WorkerAbstraction } from "./worker-abstraction"
 
-export const workerData = decodeURIComponent(self.location.hash.replace(/^#/, ""))
+export const workerData = decodeURIComponent(
+  self.location.hash.replace(/^#/, "")
+)
 
-export function makeWorker<ReceiveMessage, SendMessage>(file: string, workerId: string): WorkerAbstraction<ReceiveMessage, SendMessage> {
+export function makeWorker<ReceiveMessage, SendMessage>(
+  file: string,
+  workerId: string
+): WorkerAbstraction<ReceiveMessage, SendMessage> {
   const worker = new Worker(`${file}#${encodeURIComponent(workerId)}`)
   // TODO: Should I do some beforeunload or something to terminate?
   // window.addEventListener("beforeunload", () => {
@@ -11,7 +16,10 @@ export function makeWorker<ReceiveMessage, SendMessage>(file: string, workerId: 
   return wrapBrowserInterface(worker)
 }
 
-export function getWorkerInterfaceForThis<ReceiveMessage, SendMessage>(): WorkerAbstraction<ReceiveMessage, SendMessage> {
+export function getWorkerInterfaceForThis<
+  ReceiveMessage,
+  SendMessage
+>(): WorkerAbstraction<ReceiveMessage, SendMessage> {
   return {
     onMessage(callback) {
       self.onmessage = (event) => {
@@ -24,7 +32,9 @@ export function getWorkerInterfaceForThis<ReceiveMessage, SendMessage>(): Worker
   }
 }
 
-function wrapBrowserInterface<ReceiveMessage, SendMessage>(port: Worker): WorkerAbstraction<ReceiveMessage, SendMessage> {
+function wrapBrowserInterface<ReceiveMessage, SendMessage>(
+  port: Worker
+): WorkerAbstraction<ReceiveMessage, SendMessage> {
   return {
     onMessage(callback) {
       port.onmessage = (event) => {

@@ -3,6 +3,6 @@ import basicWorker from "./basic-worker"
 
 test("basic worker", async () => {
   const workerApi = basicWorker.create()
-  const result = await workerApi.greet('mom')
+  const result = await workerApi.greet("mom")
   strictEqual(result, "hi mom")
 })
