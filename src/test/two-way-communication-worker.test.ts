@@ -51,4 +51,5 @@ test("worker lib should allow back-and-forth functions", async () => {
       `i${i} j2 k-2 ll2`,
     ])
   }
+  strictEqual(callNum, 100)
 })

@@ -1,8 +1,6 @@
 import type { WorkerAbstraction } from "./worker-abstraction"
 
-export const workerData = decodeURIComponent(
-  self.location.hash.replace(/^#/, "")
-)
+export const workerId = decodeURIComponent(self.location.hash.replace(/^#/, ""))
 
 export function makeWorker<ReceiveMessage, SendMessage>(
   file: string,
@@ -23,7 +21,7 @@ export function getWorkerInterfaceForThis<
   return {
     onMessage(callback) {
       self.onmessage = (event) => {
-        callback(event.data)
+        callback(event.data as ReceiveMessage)
       }
     },
     postMessage(data) {

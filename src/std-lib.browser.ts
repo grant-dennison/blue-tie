@@ -1,7 +1,7 @@
 import {
   getWorkerInterfaceForThis,
   makeWorker,
-  workerData,
+  workerId,
 } from "./worker-abstraction.browser"
 export const randomUUID = () => crypto.randomUUID()
 
@@ -14,7 +14,7 @@ const stdLib: StdLib = {
   isMainThread,
   getWorkerInterfaceForThis,
   makeWorker,
-  workerData,
+  workerId,
   randomUUID: () => crypto.randomUUID(),
 }
 

@@ -11,7 +11,7 @@ const stdLib: StdLib = {
   getWorkerInterfaceForThis,
   makeWorker,
   randomUUID,
-  workerData,
+  workerId: typeof workerData === "string" ? workerData : "<UNKNOWN>",
 }
 
 export default stdLib

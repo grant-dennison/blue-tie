@@ -13,7 +13,7 @@ const {
   isMainThread,
   makeWorker,
   randomUUID,
-  workerData,
+  workerId: globalWorkerId,
 } = stdLib
 
 export function defineWorker<T extends Record<string, SomeFunction>>(
@@ -21,7 +21,7 @@ export function defineWorker<T extends Record<string, SomeFunction>>(
   fileName: string,
   spec: T
 ): { create: () => WorkerInterface<T> } {
-  if (!isMainThread && workerId === workerData) {
+  if (!isMainThread && workerId === globalWorkerId) {
     const pp = getWorkerInterfaceForThis<ReceiveMessage, SendMessage>()
     assert(pp)
     setUpRpc(pp, spec)
@@ -42,7 +42,7 @@ function makeRpcWorker<T extends Record<string, SomeFunction>>(
   const w = setUpRpc(worker, {})
 
   return Object.entries(spec)
-    .map(([key, value]) => {
+    .map(([key]) => {
       return [key, (...args: unknown[]) => w.makeCall(key, args)] as const
     })
     .reduce((workerApi, [key, value]) => {
@@ -60,7 +60,8 @@ type DebugNever<Message extends string, T = unknown> = [
   Message,
   typeof neverSymbol
 ]
-type SomeFunction = (...args: any[]) => any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type SomeFunction = (...args: readonly any[]) => unknown
 type WorkerInterface<T> = {
   [K in keyof T]: T[K] extends SomeFunction
     ? T[K]
@@ -69,14 +70,15 @@ type WorkerInterface<T> = {
 
 function setUpRpc(
   port: WorkerAbstraction<ReceiveMessage, SendMessage>,
-  initialPhoneBook: Record<string, (...args: any) => any>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  initialPhoneBook: Record<string, (...args: readonly any[]) => unknown>
 ) {
   const phoneBook = new Map(Object.entries(initialPhoneBook))
 
   function serialize(thing: unknown) {
     if (typeof thing === "function") {
       const id = randomUUID()
-      phoneBook.set(id, (...args) => thing(...args))
+      phoneBook.set(id, (...args: readonly unknown[]) => thing(...args))
       return { [rpcSerializedKey]: id }
     }
     return thing
@@ -95,7 +97,7 @@ function setUpRpc(
     return thing
   }
 
-  port.onMessage(async (message) => {
+  async function handleMessage(message: ReceiveMessage) {
     if (message.type === "ref-free") {
       for (const refId of message.referenceIds) {
         phoneBook.delete(refId)
@@ -133,7 +135,20 @@ function setUpRpc(
     } else {
       resolve(unserialize(message.value))
     }
-  })
+  }
+
+  function syncHandleMessage(message: ReceiveMessage) {
+    handleMessage(message).then(
+      () => {
+        // Do nothing.
+      },
+      (e) => {
+        console.error("Unrecoverable error", e)
+      }
+    )
+  }
+
+  port.onMessage(syncHandleMessage)
   async function makeCall(functionName: string, args: readonly unknown[]) {
     const message: CallMessage = {
       type: "call",
@@ -160,10 +175,6 @@ const rpcSerializedKey = "__$$RPC$$__"
 
 interface SerializedRpc {
   [rpcSerializedKey]: string
-}
-
-class Rpc {
-  constructor(readonly id: string) {}
 }
 
 function instanceOfSerializedRpc(o: unknown): o is SerializedRpc {

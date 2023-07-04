@@ -12,7 +12,10 @@ export default defineWorker(
         return `${prefix}${input}${i++}`
       }
     },
-    runFunction: async <P extends readonly unknown[], T extends (...args: P) => unknown>(
+    runFunction: async <
+      P extends readonly unknown[],
+      T extends (...args: P) => unknown
+    >(
       run: T,
       args: P
     ) => run(...args),

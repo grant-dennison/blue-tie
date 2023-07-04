@@ -59,7 +59,7 @@ function stringifyError(e: unknown): string {
     return e
   }
   if (e instanceof Error) {
-    return `${e.message}\n${e.stack}`
+    return `${e.message}\n${e.stack ?? "[no stack]"}`
   }
   return JSON.stringify(e)
 }
