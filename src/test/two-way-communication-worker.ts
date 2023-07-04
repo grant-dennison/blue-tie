@@ -1,6 +1,6 @@
 import { defineWorker } from "worker-pool";
 
-export default defineWorker(__filename, {
+export default defineWorker("2-way worker", __filename, {
   getFunction: async (prefix: string) => {
     let i = 0
     return async (input: string) => {
