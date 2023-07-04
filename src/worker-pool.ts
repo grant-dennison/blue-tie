@@ -5,10 +5,10 @@ import type {
   SendMessage,
 } from "message-types"
 import stdLib from "std-lib"
+import { assert } from "./assert"
 import type { WorkerAbstraction } from "./worker-abstraction"
 
 const {
-  assert,
   getWorkerInterfaceForThis,
   isMainThread,
   makeWorker,
