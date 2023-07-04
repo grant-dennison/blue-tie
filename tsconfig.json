@@ -1,14 +1,25 @@
 {
-  "extends": "@tsconfig/node16/tsconfig.json",
   "compilerOptions": {
     "declaration": true,
     "rootDir": "src",
     "outDir": "lib",
-    "importsNotUsedAsValues": "error",
     "baseUrl": "./src",
     "paths": {
-      "under-the-sun": ["."]
-    }
+      "std": ["./std.node.ts"],
+      "std.browser": ["./std.browser.ts"],
+      "test-basics": ["./test/test-basics.node.ts"],
+      "test-basics.browser": ["./test/test-basics.browser.ts"],
+    },
+    "lib": ["es2021", "DOM", "WebWorker"],
+    "module": "commonjs",
+    "target": "es2021",
+
+    "strict": true,
+    "importsNotUsedAsValues": "error",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node"
   },
   "include": ["src/**/*.ts", "magic-global.d.ts"]
 }

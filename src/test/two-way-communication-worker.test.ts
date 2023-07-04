@@ -1,5 +1,4 @@
-import assert from "node:assert"
-import { test } from "under-the-sun"
+import { deepStrictEqual, strictEqual, test } from "test-basics"
 import twoWayCommWorker from "./two-way-communication-worker"
 
 test("worker lib should allow calling a function returned from worker", async () => {
@@ -7,7 +6,7 @@ test("worker lib should allow calling a function returned from worker", async ()
   const run = await workerApi.getFunction("worker-")
   for (let i = 0; i < 100; i++) {
     const result = await run("run")
-    assert.strictEqual(result, `worker-run${i}`)
+    strictEqual(result, `worker-run${i}`)
   }
 })
 
@@ -19,7 +18,7 @@ test("worker lib should allow passing a function to a worker", async () => {
   }
   for (let i = 0; i < 100; i++) {
     const result = await workerApi.runFunction(run, [i])
-    assert.strictEqual(result, `main-run ${i} ${i}`)
+    strictEqual(result, `main-run ${i} ${i}`)
   }
 })
 
@@ -41,7 +40,7 @@ test("worker lib should allow back-and-forth functions", async () => {
   }
   for (let i = 0; i < 100; i++) {
     const result = await workerApi.runFunction(runJ, [i])
-    assert.deepStrictEqual(result, [
+    deepStrictEqual(result, [
       `i${i} j0 k0 ll0`,
       `i${i} j1 k-1 ll1`,
       `i${i} j2 k-2 ll2`,

@@ -1,39 +1,6 @@
-import assert from "node:assert"
-import { randomUUID } from "node:crypto"
-import { isMainThread, MessagePort, parentPort, Worker, workerData } from "node:worker_threads"
-
-type CallMessage = {
-  type: "call"
-  callerId: string
-  functionName: string
-  args: readonly unknown[]
-}
-
-type CallResolveMessage = {
-  type: "resolve"
-  callerId: string
-  value: unknown
-}
-
-type CallRejectMessage = {
-  type: "reject"
-  callerId: string
-  value: unknown
-}
-
-type CallResponseMessage =
-  CallResolveMessage |
-  CallRejectMessage
-
-type ReferenceFreeMessage = {
-  type: "ref-free"
-  referenceIds: readonly string[]
-}
-
-const workerExecArgv = process.execArgv.slice()
-export function addExecArgv(...newArgs: readonly string[]): void {
-  workerExecArgv.push(...newArgs)
-}
+import type { CallMessage, CallResponseMessage, ReceiveMessage, SendMessage } from "message-types"
+import { assert, getWorkerInterfaceForThis, isMainThread, makeWorker, randomUUID, workerData } from "std"
+import type { WorkerAbstraction } from "./worker-abstraction"
 
 export function defineWorker<T extends Record<string, SomeFunction>>(
   workerId: string,
@@ -41,28 +8,22 @@ export function defineWorker<T extends Record<string, SomeFunction>>(
   spec: T
 ): { create: () => WorkerInterface<T> } {
   if (!isMainThread && workerId === workerData) {
-    const pp = parentPort
+    const pp = getWorkerInterfaceForThis<ReceiveMessage, SendMessage>()
     assert(pp)
     setUpRpc(pp, spec)
   }
   return {
-    create: () => makeWorker(workerId, fileName, spec)
+    create: () => makeRpcWorker(workerId, fileName, spec)
   }
 }
 
-function makeWorker<T extends Record<string, SomeFunction>>(
+function makeRpcWorker<T extends Record<string, SomeFunction>>(
   workerId: string,
   fileName: string,
   spec: T
 ): WorkerInterface<T> {
   assert(isMainThread)
-  const worker = new Worker(fileName, {
-    execArgv: workerExecArgv,
-    workerData: workerId,
-  })
-  process.on("beforeExit", () => {
-    void worker.terminate()
-  })
+  const worker = makeWorker<ReceiveMessage, SendMessage>(fileName, workerId)
 
   const w = setUpRpc(worker, {})
 
@@ -81,8 +42,8 @@ type DebugNever<Message extends string, T = unknown> = [never, T, Message, typeo
 type SomeFunction = (...args: any[]) => any
 type WorkerInterface<T> = { [K in keyof T]: T[K] extends SomeFunction ? T[K] : DebugNever<"Field is not a function", [K, T[K]]> }
 
-function setUpRpc(port: Worker | MessagePort, initialPhoneBook: Record<string, (...args: any) => any>) {
-  const phoneBook = new Map(Object.entries(initialPhoneBook))
+function setUpRpc(port: WorkerAbstraction<ReceiveMessage, SendMessage>, initialPhoneBook: Record<string, (...args: any) => any>) {
+    const phoneBook = new Map(Object.entries(initialPhoneBook))
 
   function serialize(thing: unknown) {
     if (typeof thing === "function") {
@@ -102,7 +63,7 @@ function setUpRpc(port: Worker | MessagePort, initialPhoneBook: Record<string, (
     return thing
   }
 
-  port.on("message", async (message: CallResponseMessage | CallMessage | ReferenceFreeMessage) => {
+  port.onMessage(async (message) => {
     if (message.type === "ref-free") {
       for (const refId of message.referenceIds) {
         phoneBook.delete(refId)
