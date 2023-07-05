@@ -1,8 +1,7 @@
 import testLib from "test-lib"
 import { defineWorker, isNode } from "worker-lib"
-import { getBrowserScript } from "./common/script.browser"
-import assert from "assert"
 import { assertRejects } from "./common/custom-assert"
+import { getBrowserScript } from "./common/script.browser"
 
 const { strictEqual, test } = testLib
 
@@ -16,7 +15,7 @@ const remoteFunctionsWorker = defineWorker(
         state++
         return state
       }
-    }
+    },
   }
 )
 
@@ -27,7 +26,7 @@ test("remote state", async () => {
   const f1a = await worker1.getStatefulFunc()
   const f1b = await worker1.getStatefulFunc()
   const f2 = await worker2.getStatefulFunc()
-  
+
   await f1a()
   await f1a()
   await f1b()
@@ -54,7 +53,10 @@ test("free remote function", async () => {
     const check1 = await f()
     strictEqual(check1, 2)
     await remoteFunctionsWorker.free(worker, f)
-    await assertRejects(() => f(), "Function should no longer function after freeing")
+    await assertRejects(
+      () => f(),
+      "Function should no longer function after freeing"
+    )
   })
 })
 
@@ -65,14 +67,20 @@ test("double-free remote function", async () => {
     const check1 = await f()
     strictEqual(check1, 2)
     await remoteFunctionsWorker.free(worker, f)
-    await assertRejects(() => remoteFunctionsWorker.free(worker, f), "Function cannot be freed a second time")
+    await assertRejects(
+      () => remoteFunctionsWorker.free(worker, f),
+      "Function cannot be freed a second time"
+    )
   })
 })
 
 test("free arbitrary function", async () => {
-  const arbitrary = async () => {}
+  const arbitrary = async () => undefined
 
   await remoteFunctionsWorker.withInstance(async (worker) => {
-    await assertRejects(() => remoteFunctionsWorker.free(worker, arbitrary), "Arbitrary function cannot be freed")
+    await assertRejects(
+      () => remoteFunctionsWorker.free(worker, arbitrary),
+      "Arbitrary function cannot be freed"
+    )
   })
 })

@@ -1,8 +1,8 @@
 import type { Message } from "message-types"
 import stdLib from "std-lib"
-import { Rpc, makeRpcWorker, setUpRpc } from "../rpc"
 import { assert } from "../assert"
-import type { DefinedWorker, SomeFunction, OnlyFunctions, WorkerInterface } from "./api-types"
+import { Rpc, makeRpcWorker, setUpRpc } from "../rpc"
+import type { DefinedWorker, SomeFunction, WorkerInterface } from "./api-types"
 import type { WorkerDiagnostics } from "./diagnostics"
 
 const {
@@ -13,7 +13,7 @@ const {
 
 /**
  * Define a worker.
- * 
+ *
  * @param workerId Arbitrary unique ID for worker; protects against bundling.
  * @param fileName Path to worker.
  *   In Node.js, this should usually be `__filename`.
@@ -63,7 +63,9 @@ export function defineWorker<T extends Record<string, SomeFunction>>(
       await rpc.freeRef(thing)
     },
     getDiagnostics: async () => {
-      const workersDiagnostics = await Promise.all([...workerMap.values()].map(rpc => rpc.getDiagnostics()))
+      const workersDiagnostics = await Promise.all(
+        [...workerMap.values()].map((rpc) => rpc.getDiagnostics())
+      )
       return {
         workersCreatedCount: workersCreatedCount,
         workersDiagnostics: workersDiagnostics,
@@ -80,6 +82,6 @@ export function defineWorker<T extends Record<string, SomeFunction>>(
         await rpc.close()
       }
       return diagnostics
-    }
+    },
   }
 }

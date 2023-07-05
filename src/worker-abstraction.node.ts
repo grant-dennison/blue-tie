@@ -32,7 +32,7 @@ export function getWorkerInterfaceForThis<
   assert(parentPort)
   return {
     ...wrapNodeInterface(parentPort),
-    terminate: async () => {},
+    terminate: async () => undefined,
   }
 }
 

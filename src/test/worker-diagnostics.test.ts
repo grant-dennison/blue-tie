@@ -8,8 +8,8 @@ const workerDiagnosticsWorker = defineWorker(
   "worker-diagnostics-worker",
   isNode ? __filename : getBrowserScript(),
   {
-    boo: async () => {},
-    getFunc: async () => async () => {}
+    boo: async () => undefined,
+    getFunc: async () => async () => undefined,
   }
 )
 
@@ -36,8 +36,8 @@ test("worker diagnostics dynamicRefCount", async () => {
   const f3 = await worker.getFunc()
   await f3()
 
-  workerDiagnosticsWorker.free(worker, f1)
-  workerDiagnosticsWorker.free(worker, f3)
+  await workerDiagnosticsWorker.free(worker, f1)
+  await workerDiagnosticsWorker.free(worker, f3)
 
   const diagnostics = await workerDiagnosticsWorker.close(worker)
   strictEqual(diagnostics.dynamicRefCount, 1)

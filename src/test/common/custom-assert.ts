@@ -1,4 +1,7 @@
-export async function assertRejects(codeToBreak: () => PromiseLike<unknown>, message: string) {
+export async function assertRejects(
+  codeToBreak: () => PromiseLike<unknown>,
+  message: string
+) {
   let threw = false
   try {
     await codeToBreak()

@@ -27,7 +27,7 @@ export function getWorkerInterfaceForThis<
     postMessage(data) {
       self.postMessage(data)
     },
-    terminate: async () => {},
+    terminate: async () => undefined,
   }
 }
 

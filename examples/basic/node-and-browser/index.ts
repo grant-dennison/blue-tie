@@ -14,7 +14,8 @@ if (isMainThread) {
   nElement.addEventListener("keyup", (e) => {
     const thisRequestId = crypto.randomUUID()
     outstandingRequestId = thisRequestId
-    resultElement.innerText = "Calculating... (notice that the UI thread is not frozen)"
+    resultElement.innerText =
+      "Calculating... (notice that the UI thread is not frozen)"
     let n = parseInt(nElement.value)
     if (isNaN(n)) {
       resultElement.innerText = "n is NaN"
@@ -26,12 +27,17 @@ if (isMainThread) {
     }
 
     // Important line #2: Call a method on the worker instance.
-    worker.fibonacci(n).then((result) => {
-      if (thisRequestId === outstandingRequestId) {
-        resultElement!.innerText = `${result}`
+    worker.fibonacci(n).then(
+      (result) => {
+        if (thisRequestId === outstandingRequestId) {
+          resultElement!.innerText = `${result}`
+        }
+      },
+      (e) => {
+        window.alert(
+          `Error: ${e instanceof Error ? e.message : JSON.stringify(e)}`
+        )
       }
-    }, (e) => {
-      window.alert(`Error: ${e instanceof Error ? e.message : JSON.stringify(e)}`)
-    })
+    )
   })
 }

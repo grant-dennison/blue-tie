@@ -5,7 +5,7 @@
 /** Is the code executing in a Node.js environment? */
 export const isNode =
   typeof process === "object" && typeof require === "function"
-  /** Is the code executing in a browser environment? */
+/** Is the code executing in a browser environment? */
 export const isBrowser = !isNode
 const isBrowserWorker = isBrowser && typeof importScripts === "function"
 

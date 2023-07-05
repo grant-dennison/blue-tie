@@ -1,3 +1,4 @@
+import type { WorkerDiagnostics } from "api/diagnostics"
 import type {
   CallMessage,
   CallRejectMessage,
@@ -5,16 +6,16 @@ import type {
   Message,
 } from "message-types"
 import stdLib from "std-lib"
-import type { SomeFunction, OnlyFunctions, WorkerInterface } from "./api/api-types"
+import type {
+  OnlyFunctions,
+  SomeAsyncFunction,
+  SomeFunction,
+  WorkerInterface,
+} from "./api/api-types"
 import { assert } from "./assert"
 import type { WorkerAbstraction } from "./worker-abstraction"
-import type { WorkerDiagnostics } from "api/diagnostics"
 
-const {
-  isMainThread,
-  makeWorker,
-  randomUUID,
-} = stdLib
+const { isMainThread, makeWorker, randomUUID } = stdLib
 
 export type Rpc<T> = {
   api: WorkerInterface<T>
@@ -47,7 +48,8 @@ export function makeRpcWorker<T extends Record<string, SomeFunction>>(
   return {
     api: specMappedToRpc,
     close: () => worker.terminate(),
-    getDiagnostics: () => rpc.makeCall<() => PromiseLike<WorkerDiagnostics>>(rpcDiagnosticsKey, []),
+    getDiagnostics: () =>
+      rpc.makeCall<() => PromiseLike<WorkerDiagnostics>>(rpcDiagnosticsKey, []),
     freeRef: rpc.freeRef,
     // freeRef: (thing) => rpc.makeCall<(thing: unknown) => PromiseLike<void>>(rpcFreeRefKey, [[thing]])
   }
@@ -66,7 +68,8 @@ export function setUpRpc(
   phoneBook.set(rpcDiagnosticsKey, async () => {
     const diagnostics: WorkerDiagnostics = {
       callCount: calls,
-      dynamicRefCount: phoneBook.size - initialPhoneBookSize - metaPhoneBookSize,
+      dynamicRefCount:
+        phoneBook.size - initialPhoneBookSize - metaPhoneBookSize,
     }
     return diagnostics
   })
@@ -94,8 +97,7 @@ export function setUpRpc(
   function unserialize(thing: unknown) {
     if (instanceOfSerializedRpc(thing)) {
       const id = thing[rpcSerializedKey]
-      const thinFunc = (...args: readonly unknown[]) =>
-        makeCall(id, args)
+      const thinFunc = (...args: readonly unknown[]) => makeCall(id, args)
       functionToRemoteRefId.set(thinFunc, id)
       return thinFunc
     }
@@ -149,7 +151,10 @@ export function setUpRpc(
   }
 
   port.onMessage(syncHandleMessage)
-  async function makeCall<FunctionType extends (...args: readonly any[]) => PromiseLike<unknown>>(functionName: string, args: Readonly<Parameters<FunctionType>>): Promise<Awaited<ReturnType<FunctionType>>> {
+  async function makeCall<FunctionType extends SomeAsyncFunction>(
+    functionName: string,
+    args: Readonly<Parameters<FunctionType>>
+  ): Promise<Awaited<ReturnType<FunctionType>>> {
     const message: CallMessage = {
       type: "call",
       callerId: randomUUID(),
@@ -161,7 +166,7 @@ export function setUpRpc(
         callerMap.set(message.callerId, [resolve, reject])
       })
       port.postMessage(message)
-      const result = await (p as ReturnType<FunctionType>)
+      const result = (await p) as Awaited<ReturnType<FunctionType>>
       return result
     } finally {
       callerMap.delete(message.callerId)
@@ -176,7 +181,10 @@ export function setUpRpc(
         throw new Error("Nothing found to free")
       }
       functionToRemoteRefId.delete(thing)
-      await makeCall<(referenceIds: readonly string[]) => PromiseLike<void>>(rpcFreeRefKey, [[id]])
+      await makeCall<(referenceIds: readonly string[]) => PromiseLike<void>>(
+        rpcFreeRefKey,
+        [[id]]
+      )
     },
   }
 }

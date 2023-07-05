@@ -41,7 +41,10 @@ test("worker lib should allow passing a function to a worker", async () => {
       return `main-run ${iState++} ${iPassed}`
     }
     for (let i = 0; i < 100; i++) {
-      const result = await workerApi.runFunction<[number], (...args: [number]) => string>(run, [i])
+      const result = await workerApi.runFunction<
+        [number],
+        (...args: [number]) => string
+      >(run, [i])
       strictEqual(result, `main-run ${i} ${i}`)
     }
   })

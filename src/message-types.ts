@@ -17,6 +17,4 @@ export type CallRejectMessage = {
   value: unknown
 }
 
-export type Message = 
-| CallResolveMessage | CallRejectMessage
-| CallMessage
+export type Message = CallResolveMessage | CallRejectMessage | CallMessage
