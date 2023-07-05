@@ -1,13 +1,14 @@
 {
   "private": true,
   "scripts": {
-    "dev": "esbuild index.ts --bundle --platform=browser --sourcemap --outfile=index.js --servedir=. --serve=8080",
-    "test": "uts -r esbuild-register -r ./add-register-for-test.ts"
+    "precli": "esbuild cli.ts --bundle --platform=node --sourcemap --outfile=cli.js",
+    "cli": "node cli.js",
+    "preserve": "esbuild browser.ts --bundle --platform=browser --sourcemap --outfile=browser.js",
+    "serve": "http-server -p 8080"
   },
   "devDependencies": {
+    "blue-tie": "file:../../..",
     "esbuild": "^0.18.11",
-    "esbuild-register": "^3.4.2",
-    "under-the-sun": "^2",
-    "worker-lib": "file:../../.."
+    "http-server": "^14.1.1"
   }
 }

@@ -1,7 +1,22 @@
 {
-  "name": "todo-name-worker-lib",
+  "name": "blue-tie",
   "version": "1.0.0",
-  "description": "TODO: description",
+  "description": "Simple typed Worker abstractions for Node.js and browser",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/grant-dennison/blue-tie"
+  },
+  "homepage": "https://github.com/grant-dennison/blue-tie",
+  "keywords": [
+    "worker",
+    "background",
+    "job",
+    "async",
+    "browser",
+    "simple",
+    "type-safe",
+    "typescript"
+  ],
   "main": "lib/index.js",
   "types": "lib/api/index.d.ts",
   "exports": {

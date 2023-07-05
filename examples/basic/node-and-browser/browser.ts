@@ -1,4 +1,4 @@
-import { isMainThread } from "worker-lib"
+import { isMainThread } from "blue-tie"
 import { fibonacciWorker } from "./fibonacci-worker"
 
 // Important line #0: If using the same script for worker as main script,

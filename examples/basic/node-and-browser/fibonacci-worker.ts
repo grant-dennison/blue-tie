@@ -1,4 +1,4 @@
-import { defineWorker, getBrowserScript, isNode } from "worker-lib"
+import { defineWorker, getBrowserScript, isNode } from "blue-tie"
 
 export const fibonacciWorker = defineWorker(
   "fibonacci worker",

@@ -9,8 +9,8 @@ export type DebugNever<Message extends string, T = unknown> = [
 ]
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type SomeFunction = (...args: readonly any[]) => unknown
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type SomeAsyncFunction = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ...args: readonly any[]
 ) => PromiseLike<unknown>
 export type OnlyFunctions<T> = {

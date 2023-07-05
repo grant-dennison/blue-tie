@@ -4,7 +4,7 @@
     "test": "uts"
   },
   "devDependencies": {
-    "under-the-sun": "^2",
-    "worker-lib": "file:../../.."
+    "blue-tie": "file:../../..",
+    "under-the-sun": "^2"
   }
 }
