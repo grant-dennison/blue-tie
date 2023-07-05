@@ -7,8 +7,8 @@
     "paths": {
       "std-lib": ["./std-lib.node.ts"],
       "std-lib.browser": ["./std-lib.browser.ts"],
-      "test-lib": ["./test/test-lib.node.ts"],
-      "test-lib.browser": ["./test/test-lib.browser.ts"],
+      "test-lib": ["./test/common/test-lib.node.ts"],
+      "test-lib.browser": ["./test/common/test-lib.browser.ts"],
       "worker-lib": ["./api/index.ts"]
     },
     "lib": ["es2021", "DOM", "WebWorker"],

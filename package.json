@@ -23,7 +23,7 @@
     "lint:fix": "eslint --fix src",
     "preprepublish": "npm run clean",
     "prepublish": "run-p --aggregate-output build check-types test generate-declarations",
-    "test": "uts -r esbuild-register -r ./src/test/add-register-for-test.ts src",
+    "test": "uts -r esbuild-register -r ./src/test/common/add-register-for-test.ts -p . src all-tests.ts",
     "test:watch": "watchlist --eager src -- npm test"
   },
   "author": "Grant Dennison <grant.dennison@gmail.com>",

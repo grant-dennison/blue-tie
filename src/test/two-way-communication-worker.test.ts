@@ -1,7 +1,28 @@
 import testLib from "test-lib"
-import twoWayCommWorker from "./two-way-communication-worker"
+import { defineWorker, isNode } from "worker-lib"
+import { getBrowserScript } from "./common/script.browser"
 
 const { deepStrictEqual, strictEqual, test } = testLib
+
+const twoWayCommWorker = defineWorker(
+  "2-way worker",
+  isNode ? __filename : getBrowserScript(),
+  {
+    getFunction: async (prefix: string) => {
+      let i = 0
+      return async (input: string) => {
+        return `${prefix}${input}${i++}`
+      }
+    },
+    runFunction: async <
+      P extends readonly unknown[],
+      T extends (...args: P) => unknown
+    >(
+      run: T,
+      args: P
+    ) => run(...args),
+  }
+)
 
 test("worker lib should allow calling a function returned from worker", async () => {
   const workerApi = twoWayCommWorker.create()

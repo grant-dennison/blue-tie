@@ -1,7 +1,28 @@
 import testLib from "test-lib"
-import { worker1, worker2 } from "./two-workers-together"
+import { defineWorker, isNode } from "worker-lib"
+import { getBrowserScript } from "./common/script.browser"
 
 const { strictEqual, test } = testLib
+
+const worker1 = defineWorker(
+  "worker1",
+  isNode ? __filename : getBrowserScript(),
+  {
+    greet1: async (input: string) => {
+      return `hi ${input}`
+    },
+  }
+)
+
+const worker2 = defineWorker(
+  "worker2",
+  isNode ? __filename : getBrowserScript(),
+  {
+    greet2: async (input: string) => {
+      return `hey ${input}`
+    },
+  }
+)
 
 test("two workers in same file", async () => {
   const worker1Api = worker1.create()
