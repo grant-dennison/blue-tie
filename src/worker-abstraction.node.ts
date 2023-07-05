@@ -11,10 +11,18 @@ export function makeWorker<ReceiveMessage, SendMessage>(
     execArgv: workerExecArgv,
     workerData: workerId,
   })
-  process.on("beforeExit", () => {
-    void worker.terminate()
-  })
-  return wrapNodeInterface(worker)
+  // TODO: Add back in beforeExit handler? I hit a MaxListenersExceededWarning.
+  // const beforeExitHandler = () => {
+  //   void worker.terminate()
+  // }
+  // process.on("beforeExit", beforeExitHandler)
+  return {
+    ...wrapNodeInterface(worker),
+    terminate: async () => {
+      // process.off("beforeExit", beforeExitHandler)
+      await worker.terminate()
+    },
+  }
 }
 
 export function getWorkerInterfaceForThis<
@@ -22,12 +30,15 @@ export function getWorkerInterfaceForThis<
   SendMessage
 >(): WorkerAbstraction<ReceiveMessage, SendMessage> {
   assert(parentPort)
-  return wrapNodeInterface(parentPort)
+  return {
+    ...wrapNodeInterface(parentPort),
+    terminate: async () => {},
+  }
 }
 
 function wrapNodeInterface<ReceiveMessage, SendMessage>(
   port: MessagePort | Worker
-): WorkerAbstraction<ReceiveMessage, SendMessage> {
+): Omit<WorkerAbstraction<ReceiveMessage, SendMessage>, "terminate"> {
   return {
     onMessage(callback) {
       port.on("message", callback)

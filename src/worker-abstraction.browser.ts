@@ -27,21 +27,23 @@ export function getWorkerInterfaceForThis<
     postMessage(data) {
       self.postMessage(data)
     },
+    terminate: async () => {},
   }
 }
 
 function wrapBrowserInterface<ReceiveMessage, SendMessage>(
-  port: Worker
+  worker: Worker
 ): WorkerAbstraction<ReceiveMessage, SendMessage> {
   return {
     onMessage(callback) {
-      port.onmessage = (event) => {
+      worker.onmessage = (event) => {
         const data = event.data as ReceiveMessage
         callback(data)
       }
     },
     postMessage(data) {
-      port.postMessage(data)
+      worker.postMessage(data)
     },
+    terminate: async () => worker.terminate(),
   }
 }

@@ -14,8 +14,22 @@ const basicWorker = defineWorker(
   }
 )
 
-test("basic worker", async () => {
+test("basic worker (with)", async () => {
+  let bodyCalled = false
+  await basicWorker.withInstance(async (workerApi) => {
+    const result = await workerApi.greet("mom")
+    strictEqual(result, "hi mom")
+    bodyCalled = true
+  })
+  strictEqual(bodyCalled, true)
+})
+
+test("basic worker (stateful)", async () => {
   const workerApi = basicWorker.create()
-  const result = await workerApi.greet("mom")
-  strictEqual(result, "hi mom")
+  try {
+    const result = await workerApi.greet("mom")
+    strictEqual(result, "hi mom")
+  } finally {
+    await basicWorker.close(workerApi)
+  }
 })
