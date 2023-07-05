@@ -35,9 +35,27 @@ export type DefinedWorker<T> = {
    * @returns An object allowing transparent logic execution through a worker.
    */
   create: () => WorkerInterface<T>
+  /**
+   * Destroy/clean up a worker started with `create()`.
+   * @param worker Instance returned from `create()`.
+   * @returns Diagnostics about worker.
+   */
   close: (worker: WorkerInterface<T>) => PromiseLike<WorkerDiagnostics>
   getDiagnostics: () => PromiseLike<OverallDiagnostics>
+  /**
+   * Explicitly free a resource returned from a worker method.
+   * At present, this is only applicable for returned functions.
+   * @param worker Instance returned from `create()` or provided from `withInstance()`.
+   * @param thing Reference to free.
+   */
   free: (worker: WorkerInterface<T>, thing: unknown) => PromiseLike<void>
+  /**
+   * Obtain a temporary worker instance.
+   * This method is equivalent to `create()` with a try/finally `close()`
+   * and is merely a convenience to avoid forgetting to close the worker.
+   * @param useInstance What to do with the worker while available.
+   * @returns Diagnostics about worker after closed.
+   */
   withInstance: (
     useInstance: (worker: WorkerInterface<T>) => PromiseLike<void>
   ) => PromiseLike<WorkerDiagnostics>

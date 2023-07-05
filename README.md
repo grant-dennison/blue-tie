@@ -67,6 +67,17 @@ Some fully functional examples are available in the [examples/ directory](exampl
 
 ## Implementation Notes
 
+### Passing Values
+
+It should be noted that all values transferred between worker and main thread
+are **copied by value**.
+This library attempts to hide that and make everything feel
+like native shared-memory multithreaded programming,
+but it is merely made to look that way.
+
+As such, be careful not to assume that pointers are equivalent,
+and be aware that passing functions may not behave entirely as expected.
+
 ### Worker File Name
 
 The second parameter (`fileName`) of the `defineWorker()` function
