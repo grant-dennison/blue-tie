@@ -1,6 +1,6 @@
 {
   "name": "blue-tie",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Simple typed Worker abstractions for Node.js and browser",
   "repository": {
     "type": "git",
@@ -36,8 +36,8 @@
     "generate-declarations": "tsc --emitDeclarationOnly",
     "lint": "eslint src",
     "lint:fix": "eslint --fix src",
-    "preprepublish": "npm run clean",
-    "prepublish": "run-p --aggregate-output build check-types test generate-declarations",
+    "preparePublishFiles": "run-p --aggregate-output build check-types test lint generate-declarations",
+    "prepublishOnly": "run-s clean preparePublishFiles",
     "test": "uts -r esbuild-register -r ./src/test/common/add-register-for-test.ts -p . src all-tests.ts",
     "test:watch": "watchlist --eager src -- npm test"
   },

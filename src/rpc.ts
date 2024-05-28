@@ -14,6 +14,7 @@ import type {
 } from "./api/api-types"
 import { assert } from "./assert"
 import type { WorkerAbstraction } from "./worker-abstraction"
+import { mapObject } from "map-object"
 
 const { isMainThread, makeWorker, randomUUID } = stdLib
 
@@ -79,11 +80,19 @@ export function setUpRpc(
     }
   })
 
-  function serialize(thing: unknown) {
+  function serialize(thing: unknown): unknown {
     if (typeof thing === "function") {
       const id = randomUUID()
       phoneBook.set(id, (...args: readonly unknown[]) => thing(...args))
       return { [rpcSerializedKey]: id }
+    }
+    if (typeof thing === "object" && !!thing) {
+      if (Array.isArray(thing)) {
+        return thing.map((value) => serialize(value))
+      }
+      return mapObject(thing as Record<string, unknown>, (value) =>
+        serialize(value)
+      )
     }
     return thing
   }
@@ -94,12 +103,20 @@ export function setUpRpc(
   >()
 
   const functionToRemoteRefId = new Map<unknown, string>()
-  function unserialize(thing: unknown) {
+  function unserialize(thing: unknown): unknown {
     if (instanceOfSerializedRpc(thing)) {
       const id = thing[rpcSerializedKey]
       const thinFunc = (...args: readonly unknown[]) => makeCall(id, args)
       functionToRemoteRefId.set(thinFunc, id)
       return thinFunc
+    }
+    if (typeof thing === "object" && !!thing) {
+      if (Array.isArray(thing)) {
+        return thing.map((value) => unserialize(value))
+      }
+      return mapObject(thing as Record<string, unknown>, (value) =>
+        unserialize(value)
+      )
     }
     return thing
   }
