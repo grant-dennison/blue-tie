@@ -6,7 +6,9 @@ export function makeWorker<ReceiveMessage, SendMessage>(
   file: string,
   workerId: string
 ): WorkerAbstraction<ReceiveMessage, SendMessage> {
-  const worker = new Worker(`${file}#${encodeURIComponent(workerId)}`)
+  const worker = new Worker(`${file}#${encodeURIComponent(workerId)}`, {
+    name: workerId,
+  })
   // TODO: Should I do some beforeunload or something to terminate?
   // window.addEventListener("beforeunload", () => {
   //   worker.terminate()

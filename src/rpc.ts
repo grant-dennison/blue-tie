@@ -172,9 +172,10 @@ export function setUpRpc(
     functionName: string,
     args: Readonly<Parameters<FunctionType>>
   ): Promise<Awaited<ReturnType<FunctionType>>> {
+    const callerId = randomUUID()
     const message: CallMessage = {
       type: "call",
-      callerId: randomUUID(),
+      callerId,
       functionName,
       args: args.map((a) => serialize(a)),
     }
@@ -186,7 +187,7 @@ export function setUpRpc(
       const result = (await p) as Awaited<ReturnType<FunctionType>>
       return result
     } finally {
-      callerMap.delete(message.callerId)
+      callerMap.delete(callerId)
     }
   }
 

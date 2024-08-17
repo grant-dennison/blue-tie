@@ -10,6 +10,7 @@ export function makeWorker<ReceiveMessage, SendMessage>(
   const worker = new Worker(file, {
     execArgv: workerExecArgv,
     workerData: workerId,
+    name: workerId,
   })
   // TODO: Add back in beforeExit handler? I hit a MaxListenersExceededWarning.
   // const beforeExitHandler = () => {

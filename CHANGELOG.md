@@ -1,5 +1,10 @@
 # Blue Tie Changelog
 
+# v1.2.0
+
+- Improve serialization performance by replacing Object.entries().reduce() with for-in
+- Specify worker name
+
 # v1.1.0
 
 - Allow passing functions nested inside objects
