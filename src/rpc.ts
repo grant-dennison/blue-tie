@@ -25,6 +25,10 @@ export type Rpc<T> = {
   freeRef: (thing: unknown) => PromiseLike<void>
 }
 
+const typedArrayPrototype: unknown = Object.getPrototypeOf(
+  new Uint8ClampedArray(new ArrayBuffer(1))
+)
+
 export function makeRpcWorker<T extends Record<string, SomeFunction>>(
   workerId: string,
   fileName: string,
@@ -90,6 +94,10 @@ export function setUpRpc(
       if (Array.isArray(thing)) {
         return thing.map((value) => serialize(value))
       }
+      const proto: unknown = Object.getPrototypeOf(thing)
+      if (proto === typedArrayPrototype) {
+        return thing
+      }
       return mapObject(thing as Record<string, unknown>, (value) =>
         serialize(value)
       )
@@ -113,6 +121,10 @@ export function setUpRpc(
     if (typeof thing === "object" && !!thing) {
       if (Array.isArray(thing)) {
         return thing.map((value) => unserialize(value))
+      }
+      const proto: unknown = Object.getPrototypeOf(thing)
+      if (proto === typedArrayPrototype) {
+        return thing
       }
       return mapObject(thing as Record<string, unknown>, (value) =>
         unserialize(value)
